@@ -44,4 +44,13 @@
     "foto": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Puente_de_los_Suspiros_Lima_Peru.jpg",
     "link": "https://goo.gl/maps/LPt8eTgGqhH2"
   }
+{
+    "nombre": "Puente de los Suspiros",
+    "tipo": "Actividad",
+    "latitud": -12.092129,
+    "longitud": -77.081719, 
+    "descripcion": "La oficina IMEKA.",
+    "foto": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Puente_de_los_Suspiros_Lima_Peru.jpg",
+    "link": "https://maps.app.goo.gl/f8KXBVMLPmKfBkzL6"
+  }
 ]
