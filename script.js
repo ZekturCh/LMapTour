@@ -21,3 +21,46 @@ map.on('drag', function() {
 // Desactivar el zoom muy alejado o muy cercano
 map.setMinZoom(11);
 map.setMaxZoom(18);
+
+
+// Variable para almacenar todos los marcadores
+let marcadores = [];
+
+// Cargar lugares desde lugares.json
+fetch('lugares.json')
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(lugar => {
+      // Crear el marcador
+      const marcador = L.marker([lugar.latitud, lugar.longitud]).addTo(map);
+
+      // Crear el contenido del popup
+      const popupContent = `
+        <h3>${lugar.nombre}</h3>
+        <img src="${lugar.foto}" alt="${lugar.nombre}" style="width:100%;height:auto;">
+        <p>${lugar.descripcion}</p>
+        <a href="${lugar.link}" target="_blank">Ver en Google Maps</a>
+      `;
+
+      // Asignar el popup al marcador
+      marcador.bindPopup(popupContent);
+
+      // Guardar el marcador y su tipo
+      marcadores.push({
+        marcador: marcador,
+        tipo: lugar.tipo
+      });
+    });
+  })
+  .catch(error => console.error('Error cargando los lugares:', error));
+
+// Función para filtrar por tipo
+function filtrar(tipoSeleccionado) {
+  marcadores.forEach(item => {
+    if (tipoSeleccionado === 'todos' || item.tipo === tipoSeleccionado) {
+      item.marcador.addTo(map);
+    } else {
+      map.removeLayer(item.marcador);
+    }
+  });
+}
