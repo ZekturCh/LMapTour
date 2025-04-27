@@ -1,10 +1,11 @@
 // Crear el mapa y centrarlo en Lima
 const map = L.map('map').setView([-12.0464, -77.0428], 12); // Coordenadas de Lima Centro
 
-// Añadir la capa del mapa de OpenStreetMap (Gratis)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
+// Mejorado - CartoDB Positron
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap contributors & CartoDB'
 }).addTo(map);
+
 
 // Definir los límites de Lima Metropolitana
 const limitesLima = [
