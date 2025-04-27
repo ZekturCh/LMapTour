@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa Turístico de Lima</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+</head>
+<body>
+
+  <h1>Mapa Turístico de Lima</h1>
+
+  <!-- Botones de filtro -->
+  <div id="filtros">
+    <button onclick="filtrar('todos')">Todos</button>
+    <button onclick="filtrar('Parque')">Parques</button>
+    <button onclick="filtrar('Restaurante')">Restaurantes</button>
+    <button onclick="filtrar('Actividad')">Actividades</button>
+    <button onclick="filtrar('Lugar Temático')">Lugares Temáticos</button>
+  </div>
+
+  <!-- Mapa -->
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
