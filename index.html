@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Duplicar Imagen</title>
+<title>Duplicar Imagen Exacta</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -11,53 +11,53 @@
         align-items: center;
         margin-top: 40px;
     }
-    #preview {
-        margin-top: 20px;
-        border: 1px solid #ccc;
-    }
+    canvas { border: 1px solid #ccc; }
 </style>
 </head>
 <body>
 
-<h2>Duplicar imagen 575×1800 a lienzo 1150×1800</h2>
+<h2>Duplicar imagen sin espacios</h2>
 
-<input type="file" id="imgInput" accept="image/*"><br><br>
-<button id="downloadBtn" disabled>Descargar imagen final</button>
+<input type="file" id="inputImg" accept="image/*"><br><br>
+<button id="downloadBtn" disabled>Descargar</button>
 
 <br>
-<canvas id="canvas" width="1150" height="1800"></canvas>
+<canvas id="canvas"></canvas>
 
 <script>
-const input = document.getElementById("imgInput");
+const input = document.getElementById("inputImg");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const downloadBtn = document.getElementById("downloadBtn");
 
-input.addEventListener("change", function() {
-    const file = this.files[0];
+input.addEventListener("change", () => {
+    const file = input.files[0];
     if (!file) return;
 
     const img = new Image();
     img.src = URL.createObjectURL(file);
 
     img.onload = () => {
-        // Limpia
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Dibuja la imagen original (575px de ancho)
-        ctx.drawImage(img, 0, 0, 575, 1800);
+        const w = img.width;   // ancho real exacto
+        const h = img.height;
 
-        // Duplica al costado
-        ctx.drawImage(img, 575, 0, 575, 1800);
+        // Canvas ahora es (ancho x 2) exacto sin espacios
+        canvas.width = w * 2;
+        canvas.height = h;
+
+        // Se dibuja pegada sin huecos
+        ctx.drawImage(img, 0, 0, w, h);
+        ctx.drawImage(img, w, 0, w, h);
 
         downloadBtn.disabled = false;
-    };
+    }
 });
 
 downloadBtn.addEventListener("click", () => {
     const link = document.createElement("a");
-    link.download = "imagen_duplicada_1150x1800.png";
-    link.href = canvas.toDataURL();
+    link.download = "imagen_duplicada.png";
+    link.href = canvas.toDataURL("image/png");
     link.click();
 });
 </script>
