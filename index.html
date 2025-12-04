@@ -22,37 +22,35 @@
 <button id="downloadBtn" disabled>Descargar</button>
 
 <br>
-<canvas id="canvas"></canvas>
+<canvas id="canvas" width="1200" height="1800"></canvas>
 
 <script>
-const input = document.getElementById("inputImg");
+const downloadBtn = document.getElementById("downloadBtn");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const downloadBtn = document.getElementById("downloadBtn");
+const input = document.getElementById("imagenInput");
 
-input.addEventListener("change", () => {
-    const file = input.files[0];
+input.addEventListener("change", e => {
+    const file = e.target.files[0];
     if (!file) return;
 
     const img = new Image();
-    img.src = URL.createObjectURL(file);
-
     img.onload = () => {
+        canvas.width = img.width * 2;  // 600 * 2 = 1200
+        canvas.height = img.height;   // 1800
 
-        const w = img.width;   // ancho real exacto
-        const h = img.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Canvas ahora es (ancho x 2) exacto sin espacios
-        canvas.width = w * 2;
-        canvas.height = h;
+        // Dibuja la primera imagen
+        ctx.drawImage(img, 0, 0);
 
-        // Se dibuja pegada sin huecos
-        ctx.drawImage(img, 0, 0, w, h);
-        ctx.drawImage(img, w, 0, w, h);
+        // Dibuja la segunda imagen pegadita
+        ctx.drawImage(img, img.width, 0);
+    };
 
-        downloadBtn.disabled = false;
-    }
+    img.src = URL.createObjectURL(file);
 });
+
 
 downloadBtn.addEventListener("click", () => {
     const link = document.createElement("a");
