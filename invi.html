@@ -81,75 +81,78 @@
 
 
 <script type="module">
-    if(localStorage.getItem("access_granted") !== "true"){
+if(localStorage.getItem("access_granted") !== "true"){
   window.location.href = "index.html";
 }
 
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
-camera.position.set(0,2,6);
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0, 1.6, 5);
+camera.lookAt(0,1,0);
 
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+/* 🌑 Luz base */
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
-// 🌑 Luz base
-scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+/* ☀️ Luz principal */
+const mainLight = new THREE.DirectionalLight(0xffffff, 2);
+mainLight.position.set(3,5,4);
+scene.add(mainLight);
 
-// 💡 LUCES PSICODÉLICAS (en el techo)
+/* 🌈 Luces psicodélicas */
 const lights = [];
 
 for(let i=0;i<4;i++){
-  const light = new THREE.SpotLight(0xff00ff, 3, 20, Math.PI/6, 0.5, 1);
-  light.position.set((i-1.5)*2, 4, 0); // arriba
-  light.target.position.set(0,0,0);
+  const light = new THREE.PointLight(0xff00ff, 25, 20);
+  light.position.set((i-1.5)*2, 3, 2);
   scene.add(light);
-  scene.add(light.target);
   lights.push(light);
 }
 
+/* 📦 Modelo */
+let model;
+
 const loader = new GLTFLoader();
 loader.load("atlantik.glb", gltf => {
-
-  const model = gltf.scene;
-
-  // 🔥 ESCALA FUERTE
-  model.scale.set(10, 10, 10);
-
-  // 📍 POSICIÓN BASE
+  model = gltf.scene;
+  model.scale.set(1.4, 1.4, 1.4); // 👈 tamaño más real
   model.position.set(0, 0, 0);
-
   scene.add(model);
 });
 
+/* 🔄 Animación */
 let t = 0;
 function animate(){
   requestAnimationFrame(animate);
   t += 0.01;
+
+  if(model){
+    model.rotation.y += 0.003;
+  }
 
   lights.forEach((l,i)=>{
     const hue = (t*40 + i*90) % 360;
     l.color.setHSL(hue/360, 1, 0.5);
   });
 
-  controls.update();
   renderer.render(scene,camera);
 }
 animate();
 
+/* 📐 Resize */
 window.addEventListener("resize",()=>{
   camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 </script>
+
 </body>
 </html>
