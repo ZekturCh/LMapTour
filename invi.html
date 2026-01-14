@@ -152,6 +152,20 @@ window.addEventListener("resize",()=>{
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
+
+  function adaptToScreen(){
+  if(innerWidth < 768){
+    // 📱 celular
+    camera.position.set(0, 1.6, 7.5);
+    if(model) model.scale.set(1.1, 1.1, 1.1);
+  }else{
+    // 💻 desktop
+    camera.position.set(0, 1.6, 5);
+    if(model) model.scale.set(1.4, 1.4, 1.4);
+  }
+  camera.lookAt(0,1,0);
+}
+
 </script>
 
 </body>
