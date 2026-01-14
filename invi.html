@@ -120,12 +120,11 @@ for(let i=0;i<4;i++){
 let model;
 
 const loader = new GLTFLoader();
-loader.load("atlantik.glb", gltf => {
+loader.load("yochibi.glb", gltf => {
   model = gltf.scene;
-  model.scale.set(1.4, 1.4, 1.4); // 👈 tamaño más real
+  model.scale.set(1.2, 1.2, 1.2); // 👈 tamaño más real
   model.position.set(0, 0, 0);
   scene.add(model);
-  adaptToScreen();
 });
 
 /* 🔄 Animación */
@@ -152,21 +151,9 @@ window.addEventListener("resize",()=>{
   camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  adaptToScreen();
 });
 
-  function adaptToScreen(){
-  if(innerWidth < 768){
-    // 📱 celular
-    camera.position.set(0, 1.6, 7.5);
-    if(model) model.scale.set(1.1, 1.1, 1.1);
-  }else{
-    // 💻 desktop
-    camera.position.set(0, 1.6, 5);
-    if(model) model.scale.set(1.4, 1.4, 1.4);
-  }
-  camera.lookAt(0,1,0);
-}
+
 
 </script>
 
