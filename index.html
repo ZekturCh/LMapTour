@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Acceso</title>
+
 <style>
 html,body{
   margin:0;
@@ -10,15 +11,10 @@ html,body{
   height:100%;
   overflow:hidden;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}
-
-video{
-  position:fixed;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:-1;
-  filter: brightness(0.6) contrast(1.2);
+  background:
+    linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+    url("https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1920&auto=format&fit=crop") 
+    center/cover no-repeat;
 }
 
 .overlay{
@@ -30,57 +26,59 @@ video{
 }
 
 .box{
-  border:3px solid white;
-  padding:40px 50px;
+  background: rgba(0,0,0,0.7);
+  border: 15px solid white;
+  padding: 50px 60px;
   text-align:center;
   box-shadow: 
-    0 0 15px #fff,
-    0 0 30px #ff00ff,
-    0 0 60px #00ffff;
-  backdrop-filter: blur(6px);
+    0 0 25px #ffffff,
+    0 0 60px rgba(255,255,255,0.8);
 }
 
 h1{
   color:white;
   font-size:48px;
-  margin-bottom:20px;
-  text-shadow:0 0 15px #ff00ff,0 0 30px #00ffff;
+  margin-bottom:25px;
+  letter-spacing:4px;
+  text-shadow:0 0 10px #fff, 0 0 25px #fff;
 }
 
 input{
   font-size:26px;
-  padding:10px 15px;
+  padding:12px 15px;
   width:260px;
   text-align:center;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   border:none;
   outline:none;
+  background:black;
+  color:white;
+  box-shadow: inset 0 0 10px #000, 0 0 10px #fff;
 }
 
 button{
-  margin-top:15px;
-  padding:10px 25px;
+  margin-top:20px;
+  padding:10px 30px;
   font-size:22px;
   cursor:pointer;
   background:black;
   color:white;
   border:2px solid white;
-  box-shadow:0 0 10px #fff,0 0 20px #ff00ff;
+  letter-spacing:3px;
+  box-shadow:0 0 10px #fff,0 0 25px #fff;
 }
 
 #error{
-  color:#ff3c3c;
-  margin-top:12px;
+  color:#ff4c4c;
+  margin-top:15px;
   font-size:18px;
   display:none;
+  text-shadow:0 0 10px red;
 }
 </style>
 </head>
-<body>
 
-<video autoplay muted loop>
-  <source src="video/club.mp4" type="video/mp4">
-</video>
+<body>
 
 <div class="overlay">
   <div class="box">
@@ -88,7 +86,7 @@ button{
     <input id="codeInput" placeholder="CÓDIGO">
     <br>
     <button onclick="checkCode()">ENTRAR</button>
-    <div id="error">Código inválido</div>
+    <div id="error">CÓDIGO INVÁLIDO</div>
   </div>
 </div>
 
@@ -100,10 +98,11 @@ async function checkCode(){
   const res = await fetch("codes.json");
   const data = await res.json();
 
-  const valid = data.codes.find(c => c.code === input && c.active);
+  const valid = data.codes.find(p => p.code === input);
 
   if(valid){
     localStorage.setItem("access_granted","true");
+    localStorage.setItem("guest_name", valid.name);
     window.location.href = "invi.html";
   }else{
     error.style.display = "block";
