@@ -110,8 +110,17 @@ for(let i=0;i<4;i++){
 }
 
 const loader = new GLTFLoader();
-loader.load("atlantik.glb", gltf=>{
-  scene.add(gltf.scene);
+loader.load("atlantik.glb", gltf => {
+
+  const model = gltf.scene;
+
+  // 🔥 ESCALA FUERTE
+  model.scale.set(10, 10, 10);
+
+  // 📍 POSICIÓN BASE
+  model.position.set(0, 0, 0);
+
+  scene.add(model);
 });
 
 let t = 0;
