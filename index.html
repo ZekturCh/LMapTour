@@ -1,67 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Duplicar Imagen Exacta</title>
+<meta charset="UTF-8" />
+<title>Mi Cumpleaños</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 40px;
-    }
-    canvas { border: 1px solid #ccc; }
+  body { margin:0; overflow:hidden; background:black; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;}
+  canvas { display:block; }
+
+  .ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  color:white;
+}
+
+.top {
+  position:absolute;
+  top:25px;
+  width:100%;
+  text-align:center;
+  font-size:52px;
+  letter-spacing:4px;
+}
+
+.left {
+  position:absolute;
+  left:20px;
+  top:50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-size:42px;
+  text-align:center;
+}
+
+.right {
+  position:absolute;
+  right:20px;
+  top:50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size:42px;
+}
+
+.bottom {
+  position:absolute;
+  bottom:30px;
+  width:100%;
+  text-align:center;
+  font-size:30px;
+  letter-spacing:3px;
+}
+
+.ui div {
+  text-shadow: 0 0 12px #ff00ff, 0 0 25px #00ffff;
+}
+
 </style>
 </head>
 <body>
 
-<h2>Duplicar imagen sin espacios</h2>
+<div class="ui">
+  <div class="top">MI CUMPLEAÑOS</div>
 
-<input type="file" id="inputImg" accept="image/*"><br><br>
-<button id="downloadBtn" disabled>Descargar</button>
+  <div class="left">17 DE ENERO</div>
 
-<br>
-<canvas id="canvas" width="1200" height="1800"></canvas>
+  <div class="right">8PM A 1AM</div>
 
-<script>
-const downloadBtn = document.getElementById("downloadBtn");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const input = document.getElementById("inputImg"); // ← ID CORRECTO
+  <div class="bottom">BERTOLLOTTO 610</div>
+</div>
 
-input.addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
 
-    const img = new Image();
-    img.onload = () => {
-        // Ajustar canvas a la suma de las 2 imágenes
-        canvas.width = img.width * 2;  
-        canvas.height = img.height;
+<script type="module">
+    if(localStorage.getItem("access_granted") !== "true"){
+  window.location.href = "gate.html";
+}
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/loaders/GLTFLoader.js";
 
-        // Primera imagen
-        ctx.drawImage(img, 0, 0);
+const scene = new THREE.Scene();
 
-        // Segunda imagen pegada
-        ctx.drawImage(img, img.width, 0);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0,2,6);
 
-        // Activar botón
-        downloadBtn.disabled = false;
-    };
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
 
-    img.src = URL.createObjectURL(file);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// 🌑 Luz base
+scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+
+// 💡 LUCES PSICODÉLICAS (en el techo)
+const lights = [];
+
+for(let i=0;i<4;i++){
+  const light = new THREE.SpotLight(0xff00ff, 3, 20, Math.PI/6, 0.5, 1);
+  light.position.set((i-1.5)*2, 4, 0); // arriba
+  light.target.position.set(0,0,0);
+  scene.add(light);
+  scene.add(light.target);
+  lights.push(light);
+}
+
+const loader = new GLTFLoader();
+loader.load("atlantik.glb", gltf=>{
+  scene.add(gltf.scene);
 });
 
-downloadBtn.addEventListener("click", () => {
-    const link = document.createElement("a");
-    link.download = "imagen_duplicada.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+let t = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  t += 0.01;
+
+  lights.forEach((l,i)=>{
+    const hue = (t*40 + i*90) % 360;
+    l.color.setHSL(hue/360, 1, 0.5);
+  });
+
+  controls.update();
+  renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener("resize",()=>{
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
 });
 </script>
-
 </body>
 </html>
