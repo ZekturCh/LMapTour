@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Acceso</title>
+<style>
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+video{
+  position:fixed;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  filter: brightness(0.6) contrast(1.2);
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.box{
+  border:3px solid white;
+  padding:40px 50px;
+  text-align:center;
+  box-shadow: 
+    0 0 15px #fff,
+    0 0 30px #ff00ff,
+    0 0 60px #00ffff;
+  backdrop-filter: blur(6px);
+}
+
+h1{
+  color:white;
+  font-size:48px;
+  margin-bottom:20px;
+  text-shadow:0 0 15px #ff00ff,0 0 30px #00ffff;
+}
+
+input{
+  font-size:26px;
+  padding:10px 15px;
+  width:260px;
+  text-align:center;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  border:none;
+  outline:none;
+}
+
+button{
+  margin-top:15px;
+  padding:10px 25px;
+  font-size:22px;
+  cursor:pointer;
+  background:black;
+  color:white;
+  border:2px solid white;
+  box-shadow:0 0 10px #fff,0 0 20px #ff00ff;
+}
+
+#error{
+  color:#ff3c3c;
+  margin-top:12px;
+  font-size:18px;
+  display:none;
+}
+</style>
+</head>
+<body>
+
+<video autoplay muted loop>
+  <source src="video/club.mp4" type="video/mp4">
+</video>
+
+<div class="overlay">
+  <div class="box">
+    <h1>INGRESA TU CÓDIGO</h1>
+    <input id="codeInput" placeholder="CÓDIGO">
+    <br>
+    <button onclick="checkCode()">ENTRAR</button>
+    <div id="error">Código inválido</div>
+  </div>
+</div>
+
+<script>
+async function checkCode(){
+  const input = document.getElementById("codeInput").value.trim().toUpperCase();
+  const error = document.getElementById("error");
+
+  const res = await fetch("codes.json");
+  const data = await res.json();
+
+  const valid = data.codes.find(c => c.code === input && c.active);
+
+  if(valid){
+    localStorage.setItem("access_granted","true");
+    window.location.href = "invi.html";
+  }else{
+    error.style.display = "block";
+  }
+}
+</script>
+
+</body>
+</html>
